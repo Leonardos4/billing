@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billing Management Application</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="icon" href="{{ url_for('static', filename='pln.ico') }}" type="image/x-icon">
+  <style>
+    body {
+      background-color: #f0f0f0; /* Warna abu-abu muda */
+    }
+
+    .container-fluid {
+      background-color: #ffffff; /* Memastikan konten utama tetap putih */
+      border-radius: 10px; /* Menambahkan sudut melengkung pada konten */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Menambahkan bayangan pada konten */
+    }
+
+    .download-button {
+      margin-top: 10px;
+    }
+
+    /* Menambahkan gaya untuk tabel agar header tetap terlihat saat di-scroll */
+    .table-responsive {
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: 760px;
+    }
+
+    th {
+      cursor: pointer;
+      background-color: #f1f1f1; /* Warna latar belakang default untuk header */
+      font-weight: bold;
+      position: sticky;
+      top: 0;
+      z-index: 1; /* Pastikan header tetap di atas tabel saat di-scroll */
+    }
+
+    /* Gaya untuk baris header ketika tetap terlihat */
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2; /* Pastikan header tidak tertutup oleh baris tabel lainnya */
+      background-color: #f1f1f1; /* Ganti warna latar belakang header yang tetap terlihat */
+      color: #000000; /* Warna teks header tetap putih */
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #dee2e6;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f8f9fa;
+      font-weight: bold;
+    }
+
+    /* Menambahkan gaya untuk header halaman */
+    h2 {
+      background-color: #07d6ff;
+      color: #ffffff;
+      padding: 15px;
+      border-radius: 5px;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Gaya untuk nav-tabs */
+    .nav-tabs {
+      border: none;
+      justify-content: center;
+    }
+
+    .nav-item {
+      margin: 0 12px;
+      background-color: #FFFF33;
+      color: #ffffff;
+    }
+
+    .nav-link {
+      padding: 5px 5px;
+      background-color: #07d6ff;
+      color: #ffffff;
+      font-weight: bold;
+      border: none;
+      transition: all 0.3s;
+      box-shadow: 0 4px 10px rgba(118, 118, 118, 0.5);
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+      text-decoration: none; /* Menghilangkan underline */
+    }
+
+    /* Gaya untuk link aktif */
+    .nav-link.active {
+      background-color: #FFFF33 !important;  /* Background kuning ketika aktif */
+      color: white;  /* Teks berwarna putih ketika aktif */
+      text-shadow: none; /* Hilangkan text-shadow pada tombol aktif */
+      text-decoration: none;
+    }
+
+    /* Gaya untuk link ketika di-hover */
+    .nav-link:hover {
+      color: #ffffff; /* Warna teks tetap putih saat di-hover */
+      text-decoration: none; /* Menghilangkan underline saat hover */
+    }
+
+
+    /* Gaya untuk tombol download */
+    .btn-primary {
+      background-color: #07d6ff;
+      border-color: #07d6ff;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+      position: relative;
+      top: -7px;
+    }
+
+    .btn-primary:hover {
+      background-color: #FFFF33;
+      color: black;
+      border-color: #05b8e4;
+    }
+
+    .btn-danger {
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+      position: relative;
+      top: -7px;
+      margin-left: 15px;
+    }
+    .btn-logout {
+      background-color: #e20303;
+      color: rgb(255, 255, 255);
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+      text-align: center;
+      margin-left: 1631px;
+      position: relative;
+      top: -7px; /* Sesuaikan nilai ini untuk mengatur ketinggian */
+    }
+    .btn-logout:hover {
+       text-decoration: none;
+       color: rgb(255, 255, 255);
+    }
+    .tab-content {
+      padding-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-fluid mt-4">
+    <h2 class="text-center">Data Dashboard</h2>
+
+    <!-- Navigasi Tab -->
+    <ul class="nav nav-tabs" id="dataTabs" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link" id="all-data-tab" data-toggle="tab" href="#all-data" role="tab" aria-controls="all-data" aria-selected="false">Semua Data</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="naik-tab" data-toggle="tab" href="#naik" role="tab" aria-controls="naik" aria-selected="false">Naik 40%</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="turun-tab" data-toggle="tab" href="#turun" role="tab" aria-controls="turun" aria-selected="false">Turun -40%</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="aman-tab" data-toggle="tab" href="#aman" role="tab" aria-controls="aman" aria-selected="false">Aman</a>
+      </li>
+    </ul> 
+
+    <div class="tab-content" id="dataTabContent">
+      <!-- Tab content for each tab -->
+      <div class="tab-pane fade show active" id="all-data" role="tabpanel" aria-labelledby="all-data-tab">
+        <div class="table-responsive">
+            {{ result_html | safe }}
+        </div>
+        <button class="btn btn-primary download-button" onclick="downloadAsXLSX('all-data')">Download Data</button>
+        <button class="btn btn-danger download-button" onclick="confirmClearTableData('billing_result')">Hapus Data</button>
+        <a href="{{ url_for('logout') }}" class="btn btn-logout mt-3">Logout</a>
+    </div>
+    
+    <div class="tab-pane fade" id="naik" role="tabpanel" aria-labelledby="naik-tab">
+        <div class="table-responsive">
+            {{ naik_html | safe }}
+        </div>
+        <button class="btn btn-primary download-button" onclick="downloadAsXLSX('naik')">Download Data</button>
+        <button class="btn btn-danger download-button" onclick="confirmClearTableData('billing_naik')">Hapus Data</button>
+        <a href="{{ url_for('logout') }}" class="btn btn-logout mt-3">Logout</a>
+    </div>
+    
+    <div class="tab-pane fade" id="turun" role="tabpanel" aria-labelledby="turun-tab">
+        <div class="table-responsive">
+            {{ turun_html | safe }}
+        </div>
+        <button class="btn btn-primary download-button" onclick="downloadAsXLSX('turun')">Download Data</button>
+        <button class="btn btn-danger download-button" onclick="confirmClearTableData('billing_turun')">Hapus Data</button>
+        <a href="{{ url_for('logout') }}" class="btn btn-logout mt-3">Logout</a>
+    </div>
+    
+    <div class="tab-pane fade" id="aman" role="tabpanel" aria-labelledby="aman-tab">
+        <div class="table-responsive">
+            {{ aman_html | safe }}
+        </div>
+        <button class="btn btn-primary download-button" onclick="downloadAsXLSX('aman')">Download Data</button>
+        <button class="btn btn-danger download-button" onclick="confirmClearTableData('billing_aman')">Hapus Data</button>
+        <a href="{{ url_for('logout') }}" class="btn btn-logout mt-3">Logout</a>
+    </div>    
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.17.0/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    // Fungsi untuk menyimpan status tab yang aktif ke localStorage
+    function saveActiveTab(tabId) {
+      localStorage.setItem("activeTabId", tabId);
+    }
+  
+    // Fungsi untuk mengatur tab yang aktif saat halaman dimuat atau di-refresh
+    function setActiveTab() {
+      const savedTabId = localStorage.getItem("activeTabId");
+  
+      if (savedTabId) {
+        const savedTabLink = document.querySelector(`.nav-link[href="${savedTabId}"]`);
+        const savedTabPane = document.querySelector(savedTabId);
+  
+        if (savedTabLink && savedTabPane) {
+          // Menghapus kelas aktif dari semua tab dan tab content
+          document.querySelectorAll(".nav-link, .tab-pane").forEach(el => {
+            el.classList.remove("active", "show");
+          });
+  
+          // Menambahkan kelas aktif ke tab dan tab content yang sesuai
+          savedTabLink.classList.add("active");
+          savedTabPane.classList.add("show", "active");
+        }
+      }
+    }
+  
+    document.addEventListener("DOMContentLoaded", () => {
+      // Set tab aktif saat halaman dimuat (termasuk setelah refresh)
+      setActiveTab();
+  
+      // Menyimpan tab yang dipilih saat tab diklik
+      document.querySelectorAll(".nav-link").forEach(tabLink => {
+        tabLink.addEventListener("click", function() {
+          const tabId = this.getAttribute("href");
+          saveActiveTab(tabId);
+        });
+      });
+  
+      // Menangani pengurutan tabel (sama seperti sebelumnya)
+      document.querySelectorAll(".tab-pane table").forEach(table => {
+        table.querySelectorAll("thead th").forEach((th, index) => {
+          let ascending = true;
+  
+          th.addEventListener("click", function() {
+            sortTable(table, index, ascending);
+            ascending = !ascending;
+          });
+        });
+      });
+    });
+  
+    // Fungsi untuk mengurutkan data dalam tabel
+    function sortTable(table, colIndex, ascending) {
+      const rows = Array.from(table.querySelectorAll("tbody tr"));
+      rows.sort((a, b) => {
+        let cellA = a.cells[colIndex].innerText.trim();
+        let cellB = b.cells[colIndex].innerText.trim();
+  
+        // Handle data dengan persen
+        if (cellA.endsWith('%') && cellB.endsWith('%')) {
+          cellA = parseFloat(cellA.replace('%', ''));
+          cellB = parseFloat(cellB.replace('%', ''));
+        } else if (!isNaN(cellA) && !isNaN(cellB)) {
+          cellA = parseFloat(cellA);
+          cellB = parseFloat(cellB);
+        }
+  
+        return ascending ? cellA - cellB : cellB - cellA;
+      });
+  
+      rows.forEach(row => table.querySelector("tbody").appendChild(row));
+    }
+    
+    document.querySelectorAll("th").forEach(th => {
+        if (th.innerText.trim() === "SAHLWBP") {
+          th.style.backgroundColor = "#FFFF33";
+        }
+      });
+      
+    // Fungsi untuk mendownload data sebagai file XLSX
+    function downloadAsXLSX(tabId) {
+      const tabContent = document.getElementById(tabId);
+      const table = tabContent.querySelector("table");
+  
+      if (!table) {
+        alert("Tabel tidak ditemukan di dalam tab ini.");
+        return;
+      }
+  
+      const rows = table.querySelectorAll("tbody tr");
+      const headerCells = table.querySelectorAll("thead th");
+      const headerData = Array.from(headerCells).map(cell => cell.innerText);
+  
+      const fotoColumns = ["FOTO AKHIR", "FOTO LALU", "FOTO LALU2"];
+      const fotoIndexes = headerData.map((header, index) =>
+        fotoColumns.includes(header.toUpperCase()) ? index : -1
+      ).filter(index => index !== -1);
+  
+      const data = [headerData];
+  
+      rows.forEach(row => {
+        const cells = row.querySelectorAll("td");
+        const rowData = Array.from(cells).map((cell, i) => {
+          const cellValue = cell.innerText.trim();
+  
+          if (fotoIndexes.includes(i)) {
+            const imgLink = cell.querySelector("a");
+            return imgLink ? { 
+              v: "LINK FOTO", 
+              l: { 
+                Target: imgLink.href, 
+                Tooltip: "Klik untuk melihat foto" 
+              } 
+            } : cellValue;
+          } else if (cell.querySelector("select")) {
+            return cell.querySelector("select").value;
+          } else if (cell.querySelector("textarea")) {
+            return cell.querySelector("textarea").value;
+          } else {
+            return cellValue;
+          }
+        });
+        data.push(rowData);
+      });
+  
+      const ws = XLSX.utils.aoa_to_sheet(data);
+  
+      fotoIndexes.forEach(index => {
+        for (let rowIndex = 1; rowIndex < data.length; rowIndex++) {
+          const cellAddress = XLSX.utils.encode_cell({ r: rowIndex, c: index });
+          const cellData = data[rowIndex][index];
+  
+          if (cellData && typeof cellData === "object" && cellData.l) {
+            ws[cellAddress] = { 
+              t: "s", 
+              v: cellData.v, 
+              l: cellData.l 
+            };
+          }
+        }
+      });
+  
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+  
+      XLSX.writeFile(wb, "data.xlsx");
+    }
+  
+    function confirmClearTableData(tabId) {
+  // Menampilkan konfirmasi dengan SweetAlert2
+  Swal.fire({
+    title: 'Apakah Anda yakin?',
+    text: "Data yang dihapus tidak bisa dikembalikan!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Hapus',
+    cancelButtonText: 'Batal',
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Jika user memilih untuk menghapus
+      fetch(`/delete_data`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ table: tabId })
+      })
+      .then(response => response.json())  
+      .then(data => {
+        if (data.message) {
+          // Menampilkan notifikasi sukses dengan SweetAlert2
+          Swal.fire({
+            title: 'Berhasil!',
+            text: 'Semua data dalam tabel berhasil dihapus.',
+            icon: 'success',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3085d6'
+          }).then(() => {
+            location.reload();
+          });
+        } else if (data.error) {
+          // Menampilkan notifikasi error dengan SweetAlert2
+          Swal.fire({
+            title: 'Gagal!',
+            text: `Gagal menghapus data: ${data.error}`,
+            icon: 'error',
+            confirmButtonText: 'Coba Lagi',
+            confirmButtonColor: '#d33'
+          });
+        }
+      })
+      .catch(error => {
+        // Menangani kesalahan jaringan atau server
+        Swal.fire({
+          title: 'Terjadi kesalahan!',
+          text: 'Tidak dapat menghubungi server. Silakan coba lagi.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#d33'
+        });
+      });
+    }
+  });
+}
+  </script>
+  
+</body>
+</html>

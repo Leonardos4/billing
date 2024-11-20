@@ -1,0 +1,94 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+}
+
+form {
+    margin-bottom: 30px;
+}
+
+
+    /* CSS untuk textarea di kolom TINDAK LANJUT */
+        .tindak-lanjut-textarea {
+        width: 250px%;  /* Atur lebar menjadi 100% agar sesuai dengan lebar kolom */
+        height: 100px; /* Atur tinggi menjadi 100px, Anda dapat menyesuaikannya */
+        box-sizing: border-box; /* Pastikan padding dan border termasuk dalam lebar */
+        padding: 8px; /* Tambahkan padding untuk estetika */
+        border: 1px solid #ccc; /* Tambahkan border untuk definisi */
+        border-radius: 4px; /* Sudut membulat */
+    }
+
+
+
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+input[type="text"],
+input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+}
+
+button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.result {
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+
+
+
+
+}
+
+
+.btn-view-db {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.btn-view-db:hover {
+    background-color: #218838;
+}
+
+
+

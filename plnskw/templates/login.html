@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='pln.ico') }}" type="image/x-icon">
+    <title>Billing Management Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Wrapper untuk menampung container inputan dan tabel */
+        .page-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Container untuk inputan, tetap di tengah halaman */
+        .container {
+            max-width: 800px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Container untuk tabel, di kiri layar dengan lebar penuh */
+        .table-container {
+            width: 100%;
+            padding: 20px;
+            background-color: #f1f1f1;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center; /* Memposisikan tombol di tengah */
+            width: 100%; /* Pastikan lebar penuh */
+            margin-bottom: 15px;
+            gap: 10px; /* Jarak antar tombol */
+        }
+
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .header img {
+            width: 15%;
+            height: auto;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.8em;
+            color: #27b8f2;
+        }
+
+        form div, .button-container {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        button[type="submit"], .btn-kuning {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-weight: bold;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-kuning {
+            padding: 10px 20px;
+            background-color: #FFFF33;
+            color: rgb(0, 0, 0);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+       
+        .btn-kuning:hover {
+            background-color: #f7ff03;
+        }
+
+        .tabs {
+            display: flex; /* Menjajarkan tab secara horizontal */
+            justify-content: center; /* Memposisikan tab di tengah layar */
+            width: 100%; /* Pastikan lebar penuh agar bisa diposisikan di tengah */
+            color: #ffffff;
+            gap: 10px; /* Memberikan jarak antar tab */
+            padding: 10px 0; /* Menambahkan sedikit padding untuk spacing vertikal */
+        }
+
+        .tab {
+            padding: 8px 8px;
+            background-color: #007BFF;
+            color: #ffffff;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(118, 118, 118, 0.5);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+            text-decoration: none; /* Menghilangkan underline */
+            cursor: pointer;
+        }
+
+        .tab:hover, .tab.active {
+            background-color: #FFFF33 !important;  /* Background kuning ketika aktif */
+            color: rgb(0, 0, 0);  /* Teks berwarna putih ketika aktif */
+            text-shadow: none; /* Hilangkan text-shadow pada tombol aktif */
+            text-decoration: none;
+        }
+
+        .tab-content {
+            display: none;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .active-content {
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            color: #333;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .header img {
+                width: 50%;
+            }
+
+            h1 {
+                font-size: 1.5em;
+                text-align: center;
+            }
+
+            button[type="submit"], .btn-kuning {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+    </style>
+    <script>
+        function showTab(tabName) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            const tabs = document.querySelectorAll('.tab');
+
+            tabContents.forEach(content => content.classList.remove('active-content'));
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active-content');
+            document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+        }
+
+        document.addEventListener("DOMContentLoaded", () => showTab('all-data'));
+    </script>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- Container untuk inputan, tetap di tengah -->
+        <div class="container">
+            <div class="header">
+                <img src="{{ url_for('static', filename='pln.JPEG') }}" alt="Billing Management Application">
+                <h1>APLIKASI BILLING PLN UP3 SINGKAWANG</h1>
+            </div>
+
+            <!-- Forms for file and period input -->
+            <form method="post" enctype="multipart/form-data">
+                <div>
+                    <label for="blth_lalulalu">Periode Bulan Lalu 2 (YYYYMM):</label>
+                    <input type="text" id="blth_lalulalu" name="blth_lalulalu" required>
+                </div>
+                <div>
+                    <label for="blth_lalu">Periode Bulan Lalu (YYYYMM):</label>
+                    <input type="text" id="blth_lalu" name="blth_lalu" required>
+                </div>
+                <div>
+                    <label for="blth_kini">Periode Bulan Kini (YYYYMM):</label>
+                    <input type="text" id="blth_kini" name="blth_kini" required>
+                </div>
+                <div>
+                    <label for="file_lalulalu">File Bulan Lalu 2:</label>
+                    <input type="file" id="file_lalulalu" name="file_lalulalu" accept=".xlsx, .xls" required>
+                </div>
+                <div>
+                    <label for="file_lalu">File Bulan Lalu:</label>
+                    <input type="file" id="file_lalu" name="file_lalu" accept=".xlsx, .xls" required>
+                </div>
+                <div>
+                    <label for="file_akhir">File Bulan Kini:</label>
+                    <input type="file" id="file_akhir" name="file_akhir" accept=".xlsx, .xls" required>
+                </div>
+                <button type="submit">Process Data</button>
+            </form>
+        </div>
+
+        <!-- Container tabel, di sebelah kiri dan menggunakan lebar penuh -->
+        <div class="table-container">
+            <div class="tabs">
+                <div class="tab" data-tab="all-data" onclick="showTab('all-data')">SEMUA DATA</div>
+                <div class="tab" data-tab="naik" onclick="showTab('naik')">NAIK 40%</div>
+                <div class="tab" data-tab="turun" onclick="showTab('turun')">TURUN - 40%</div>
+                <div class="tab" data-tab="aman" onclick="showTab('aman')">DATA AMAN</div>
+            </div>
+
+            <!-- Table content for each tab -->
+            {% for tab, data in [('all-data', result), ('naik', naik), ('turun', turun), ('aman', aman)] %}
+            <div id="{{ tab }}" class="tab-content">
+                <div class="button-container">
+                    <a href="{{ url_for('view_data') }}" class="btn-kuning">Lihat Data dari Database</a>
+                </div>
+                <table class="sortable">{{ data|safe }}</table>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
